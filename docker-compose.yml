@@ -1,0 +1,32 @@
+version: "3"
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "40000:80"
+    depends_on:
+      - app
+  postgres:
+    image: postgres:10.3
+    restart: always
+    environment:
+      POSTGRES_USER:
+      POSTGRES_PASSWORD:
+    volumes:
+      - postgres:/var/lib/postgresql/data
+  app:
+    build:
+      context: ./
+      args:
+        DATABASE_URL:
+    restart: always
+    environment:
+      DATABASE_URL:
+      SESSION_SECRET_KEY:
+    ports:
+      - "3333:3333"
+      - "5555:5555"
+    depends_on:
+      - postgres
+volumes:
+  postgres: ~
